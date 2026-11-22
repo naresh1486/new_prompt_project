@@ -33,15 +33,27 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-ALLOWED_ORIGINS = list(
-    dict.fromkeys([settings.frontend_origin, "http://localhost:3000", "http://127.0.0.1:3000"])
-)
+raw_origins = [o.strip() for o in settings.frontend_origin.split(",") if o.strip()]
+if "*" in raw_origins:
+    ALLOWED_ORIGINS = ["*"]
+else:
+    ALLOWED_ORIGINS = list(
+        dict.fromkeys(
+            raw_origins
+            + [
+                "https://new-prompt-project.vercel.app",
+                "http://localhost:3000",
+                "http://127.0.0.1:3000",
+            ]
+        )
+    )
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=r"^https://.*\.vercel\.app$",
     allow_credentials=False,
-    allow_methods=["GET", "POST"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 

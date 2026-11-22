@@ -5,7 +5,19 @@ import os
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+def _find_project_root() -> Path:
+    if os.getenv("PROJECT_ROOT"):
+        return Path(os.environ["PROJECT_ROOT"]).resolve()
+    current_file = Path(__file__).resolve()
+    # Check if storage exists or is in parents[1] (Docker container root /app)
+    if (current_file.parents[1] / "storage").exists() or (current_file.parents[1] / "requirements.txt").exists():
+        return current_file.parents[1]
+    if len(current_file.parents) > 2:
+        return current_file.parents[2]
+    return current_file.parents[1]
+
+
+PROJECT_ROOT = _find_project_root()
 DEFAULT_DATABASE_URL = f"sqlite:///{(PROJECT_ROOT / 'storage' / 'meeting_transcriber.db').as_posix()}"
 
 
