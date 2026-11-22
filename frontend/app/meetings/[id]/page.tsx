@@ -20,6 +20,17 @@ import {
   startMeetingProcessing
 } from "../../lib/meetings";
 
+function getSpeakerBadgeClass(speaker: string): string {
+  const normalized = speaker.toLowerCase();
+  if (normalized.includes("2")) {
+    return "text-purple-300 bg-purple-950/70 border border-purple-700/60";
+  }
+  if (normalized.includes("3")) {
+    return "text-emerald-300 bg-emerald-950/70 border border-emerald-700/60";
+  }
+  return "text-cyan-300 bg-cyan-950/70 border border-cyan-700/60";
+}
+
 export default function MeetingDetailPage() {
   const params = useParams<{ id: string }>();
   const meetingId = params?.id;
@@ -503,9 +514,9 @@ export default function MeetingDetailPage() {
                         <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                           <div className="flex items-center gap-2">
                             <span
-                              className={`font-semibold ${
-                                isActiveSegment ? "text-cyan-200" : "text-cyan-300"
-                              }`}
+                              className={`rounded px-2 py-0.5 font-semibold text-xs transition ${getSpeakerBadgeClass(
+                                segment.speaker
+                              )}`}
                             >
                               {segment.speaker}
                             </span>

@@ -144,7 +144,7 @@ def build_processed_transcript(
     title: str | None = None,
 ) -> dict:
     """Build a structured, frontend-ready transcript payload without mutating DB rows."""
-    processed_segments = process_transcript_segments(segments)
+    processed_segments = process_transcript_segments(segments, max_gap_seconds=-1.0)
     distinct_speakers = {segment.speaker for segment in processed_segments}
 
     return {
